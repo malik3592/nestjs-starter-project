@@ -3,40 +3,16 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  BadRequestException,
+  HttpException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import * as crypto from 'crypto';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { decrypt, encrypt } from 'src/utils/aes-encryption.util';
 
 @Injectable()
 export class EncryptionInterceptor implements NestInterceptor {
-  private readonly algorithm = 'aes-256-cbc';
-  private readonly secretKey = 'your-secret-key-32chars-long';
-  private readonly iv = 'your-initial-vector';
-
   constructor(private readonly isEncryptionActive: boolean) {}
-
-  decrypt(text: string): any {
-    const decipher = crypto.createDecipheriv(
-      this.algorithm,
-      this.secretKey,
-      this.iv,
-    );
-    let decrypted = decipher.update(text, 'base64', 'utf8');
-    decrypted += decipher.final('utf8');
-    return JSON.parse(decrypted);
-  }
-
-  encrypt(data: any): string {
-    const cipher = crypto.createCipheriv(
-      this.algorithm,
-      this.secretKey,
-      this.iv,
-    );
-    let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'base64');
-    encrypted += cipher.final('base64');
-    return encrypted;
-  }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
@@ -44,9 +20,9 @@ export class EncryptionInterceptor implements NestInterceptor {
     // Decrypt request body
     if (this.isEncryptionActive && req.body && 'chipher' in req.body) {
       try {
-        req.body = this.decrypt(req.body.chipher);
+        req.body = decrypt(req.body.chipher);
       } catch (err) {
-        throw new Error('Invalid encrypted payload');
+        throw new BadRequestException('Invalid encrypted payload');
       }
     }
 
@@ -54,9 +30,27 @@ export class EncryptionInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (this.isEncryptionActive) {
-          return { chipher: this.encrypt(data) };
+          return { chipher: encrypt(data) };
         }
         return data;
+      }),
+      catchError((error) => {
+        // Encrypt error response
+        if (this.isEncryptionActive) {
+          const status =
+            error instanceof HttpException ? error.getStatus() : 500;
+          const message =
+            error instanceof HttpException
+              ? error.getResponse()
+              : { message: 'Internal Server Error' };
+
+          const encryptedError = { chipher: encrypt(message) };
+
+          return throwError(() => new HttpException(encryptedError, status));
+        }
+
+        // Pass through unencrypted error
+        return throwError(() => error);
       }),
     );
   }

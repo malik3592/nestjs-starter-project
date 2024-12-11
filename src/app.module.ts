@@ -94,6 +94,16 @@ const ENV = process.env.NODE_ENV;
   controllers: [AppController],
   providers: [
     AppService,
+
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (configService: ConfigService) => {
+        const isEncryptionActive =
+          configService.get<string>('ENCRYPTION_ACTIVE') === 'true';
+        return new EncryptionInterceptor(isEncryptionActive);
+      },
+      inject: [ConfigService],
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: DataResponseInterceptor,
@@ -106,15 +116,7 @@ const ENV = process.env.NODE_ENV;
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useFactory: (configService: ConfigService) => {
-        const isEncryptionActive =
-          configService.get<string>('ENCRYPTION_ACTIVE') === 'true';
-        return new EncryptionInterceptor(isEncryptionActive);
-      },
-      inject: [ConfigService],
-    },
+
     AccessTokenGuard,
   ],
 })
