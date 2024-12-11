@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const pluralize = require('pluralize'); // Import pluralize for proper pluralization
 
 const moduleName = process.argv[2];
 if (!moduleName) {
@@ -6,7 +7,8 @@ if (!moduleName) {
   process.exit(1);
 }
 
-const pluralizedName = `${moduleName}s`;
+const pluralizedName = pluralize(moduleName); // Pluralized name for modules, controllers, etc.
+const singularName = pluralize.singular(moduleName); // Singular name for schema
 
 try {
   console.log(`Generating module: ${pluralizedName}`);
@@ -21,19 +23,19 @@ try {
     { stdio: 'inherit' },
   );
 
-  console.log(`Generating schema: ${pluralizedName}`);
+  console.log(`Generating schema: ${singularName}`);
   execSync(
-    `npx nest g class ${pluralizedName}/${moduleName}.schema --no-spec --flat`,
+    `npx nest g class ${pluralizedName}/${singularName}.schema --no-spec --flat`,
     { stdio: 'inherit' },
   );
 
   console.log(`Generating DTOs: ${pluralizedName}`);
   execSync(
-    `npx nest g class ${pluralizedName}/dtos/create-${moduleName}.dto --no-spec --flat`,
+    `npx nest g class ${pluralizedName}/dtos/create-${singularName}.dto --no-spec --flat`,
     { stdio: 'inherit' },
   );
   execSync(
-    `npx nest g class ${pluralizedName}/dtos/update-${moduleName}.dto --no-spec --flat`,
+    `npx nest g class ${pluralizedName}/dtos/update-${singularName}.dto --no-spec --flat`,
     { stdio: 'inherit' },
   );
 
