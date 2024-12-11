@@ -26,6 +26,7 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { ModulesModule } from './modules/modules.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { EncryptionInterceptor } from './common/interceptors/encryption.interceptor';
+import { EncryptionsModule } from './encryptions/encryptions.module';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -90,6 +91,7 @@ const ENV = process.env.NODE_ENV;
     PermissionsModule,
     ModulesModule,
     RolePermissionsModule,
+    EncryptionsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -100,7 +102,10 @@ const ENV = process.env.NODE_ENV;
       useFactory: (configService: ConfigService) => {
         const isEncryptionActive =
           configService.get<string>('ENCRYPTION_ACTIVE') === 'true';
-        return new EncryptionInterceptor(isEncryptionActive);
+        return new EncryptionInterceptor(isEncryptionActive, [
+          '/encryptions/encrypt',
+          '/encryptions/decrypt',
+        ]);
       },
       inject: [ConfigService],
     },

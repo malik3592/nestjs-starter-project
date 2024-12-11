@@ -8,14 +8,22 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { decrypt, encrypt } from 'src/utils/aes-encryption.util';
+import { decrypt, encrypt } from '../../utils/aes-encryption.util';
 
 @Injectable()
 export class EncryptionInterceptor implements NestInterceptor {
-  constructor(private readonly isEncryptionActive: boolean) {}
+  constructor(
+    private readonly isEncryptionActive: boolean,
+    private readonly excludedPaths: string[] = [],
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
+    // Check if the path is excluded
+    const url = req.url;
+    if (this.excludedPaths.some((path) => url.startsWith(path))) {
+      return next.handle(); // Skip interception
+    }
 
     // Decrypt request body
     if (this.isEncryptionActive && req.body && 'chipher' in req.body) {
@@ -44,7 +52,7 @@ export class EncryptionInterceptor implements NestInterceptor {
               ? error.getResponse()
               : { message: 'Internal Server Error' };
 
-          const encryptedError = { chipher: encrypt(message) };
+          const encryptedError = { chipher: encrypt({ status, message }) };
 
           return throwError(() => new HttpException(encryptedError, status));
         }

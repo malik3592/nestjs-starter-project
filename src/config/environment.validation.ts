@@ -11,4 +11,7 @@ export default Joi.object({
   JWT_REFRESH_TOKEN_TTL: Joi.number().required(),
   SWAGGER_USER: Joi.string().optional(),
   SWAGGER_PASSWORD: Joi.string().optional(),
+  ENCRYPTION_ACTIVE: Joi.string().valid('true', 'false').optional(),
+  ENCRYPTION_IV: Joi.string().length(16).optional(),
+  ENCRYPTION_KEY: Joi.string().length(32).optional(),
 });

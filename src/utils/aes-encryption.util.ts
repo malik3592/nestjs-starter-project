@@ -1,10 +1,10 @@
 import * as crypto from 'crypto';
-
+import * as dotenv from 'dotenv';
+dotenv.config({ path: ['.env', `.env.${process.env.NODE_ENV}`, 'config.env'] });
 // Constants for encryption
 const algorithm = 'aes-256-cbc';
-const secretKey = 'asdfghjklqwertyuiomnbvcxdfghjklo'; // Must be 32 characters
-const iv = 'asxcfvgbhnjmkloi'; // Must be 16 characters
-
+const secretKey = process.env.ENCRYPTION_KEY; // Must be 32 characters
+const iv = process.env.ENCRYPTION_IV; // Must be 16 characters
 /**
  * Encrypts the given data using AES-256-CBC encryption.
  * @param data The data to be encrypted.

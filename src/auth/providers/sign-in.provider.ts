@@ -10,8 +10,7 @@ import { UsersService } from '../../users/providers/users.service';
 import { HashingProvider } from './hashing.provider';
 
 import { GenerateTokensProvider } from './generate-tokens.provider';
-import { RolePermissionsService } from 'src/role-permissions/providers/role-permissions.service';
-import { User } from 'src/users/user.schema';
+import { RolePermissionsService } from '../../role-permissions/providers/role-permissions.service';
 
 @Injectable()
 export class SignInProvider {

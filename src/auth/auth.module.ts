@@ -14,7 +14,7 @@ import { RegisterProvider } from './providers/register.provider';
 import { ForgetPasswordProvider } from './providers/forget-password.provider';
 import { VerifyOtpProvider } from './providers/verify-otp.provider';
 import { UpdatePasswordProvider } from './providers/update-password.provider';
-import { RolePermissionsModule } from 'src/role-permissions/role-permissions.module';
+import { RolePermissionsModule } from '../role-permissions/role-permissions.module';
 
 @Module({
   controllers: [AuthController],

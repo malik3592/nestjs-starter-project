@@ -2,7 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { UserTypeEnum } from './enums/userType.enum';
-import { Role } from 'src/roles/role.schema';
+import { Role } from '../roles/role.schema';
 
 /**
  * Schema representing the User entity.
