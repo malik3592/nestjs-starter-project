@@ -38,9 +38,9 @@ export class EncryptionMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     if (this.encryptionEnabled) {
       // Decrypt incoming request
-      if (req.body && req.body.chipher) {
+      if (req.body && req.body.cipher) {
         try {
-          const decryptedData = this.decrypt(req.body.chipher);
+          const decryptedData = this.decrypt(req.body.cipher);
           req.body = decryptedData; // Set decrypted data to the request body
         } catch (err) {
           console.error('Decryption failed:', err.message);
@@ -53,7 +53,7 @@ export class EncryptionMiddleware implements NestMiddleware {
       res.send = (body: any) => {
         if (body) {
           try {
-            const encryptedResponse = { chipher: this.encrypt(body) };
+            const encryptedResponse = { cipher: this.encrypt(body) };
             return originalSend.call(res, encryptedResponse);
           } catch (err) {
             console.error('Encryption failed:', err.message);

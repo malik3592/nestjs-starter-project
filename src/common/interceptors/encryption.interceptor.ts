@@ -26,9 +26,9 @@ export class EncryptionInterceptor implements NestInterceptor {
     }
 
     // Decrypt request body
-    if (this.isEncryptionActive && req.body && 'chipher' in req.body) {
+    if (this.isEncryptionActive && req.body && 'cipher' in req.body) {
       try {
-        req.body = decrypt(req.body.chipher);
+        req.body = decrypt(req.body.cipher);
       } catch (err) {
         throw new BadRequestException('Invalid encrypted payload');
       }
@@ -38,7 +38,7 @@ export class EncryptionInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (this.isEncryptionActive) {
-          return { chipher: encrypt(data) };
+          return { cipher: encrypt(data) };
         }
         return data;
       }),
@@ -52,7 +52,7 @@ export class EncryptionInterceptor implements NestInterceptor {
               ? error.getResponse()
               : { message: 'Internal Server Error' };
 
-          const encryptedError = { chipher: encrypt({ status, message }) };
+          const encryptedError = { cipher: encrypt({ status, message }) };
 
           return throwError(() => new HttpException(encryptedError, status));
         }
