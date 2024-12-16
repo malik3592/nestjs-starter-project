@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { DataResponseInterceptor } from './common/interceptors/data-response.interceptor';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
@@ -27,6 +27,7 @@ import { ModulesModule } from './modules/modules.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { EncryptionInterceptor } from './common/interceptors/encryption.interceptor';
 import { EncryptionsModule } from './encryptions/encryptions.module';
+import { MongoExceptionFilter } from './common/filters/mongo.exception.filter';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -108,6 +109,10 @@ const ENV = process.env.NODE_ENV;
         ]);
       },
       inject: [ConfigService],
+    },
+    {
+      provide: APP_FILTER,
+      useClass: MongoExceptionFilter,
     },
     {
       provide: APP_INTERCEPTOR,
