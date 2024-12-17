@@ -36,7 +36,7 @@ const ENV = process.env.NODE_ENV;
      * Static files
      */
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '.', 'public'), // Serve static files from the "public" folder
+      rootPath: join(__dirname, '../', 'public'), // Serve static files from the "public" folder
     }),
     /**
      * Environment Config
