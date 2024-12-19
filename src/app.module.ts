@@ -28,6 +28,8 @@ import { RolePermissionsModule } from './role-permissions/role-permissions.modul
 import { EncryptionInterceptor } from './common/interceptors/encryption.interceptor';
 import { EncryptionsModule } from './encryptions/encryptions.module';
 import { MongoExceptionFilter } from './common/filters/mongo.exception.filter';
+import { PaginationWithAggregationProvider } from './common/pagination/providors/pagination-with-aggregation.provider';
+import { PaginationProvider } from './common/pagination/providors/pagination.provide';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -128,6 +130,8 @@ const ENV = process.env.NODE_ENV;
     },
 
     AccessTokenGuard,
+    PaginationWithAggregationProvider,
+    PaginationProvider,
   ],
 })
 export class AppModule {}

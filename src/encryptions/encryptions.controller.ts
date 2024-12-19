@@ -4,8 +4,8 @@ import { EncryptionsService } from './providers/encryptions.service';
 import { DecryptDataDto } from './dtos/decrypt-data.dto';
 import { EncryptDataDto } from './dtos/encrypt-data.dto'; // Import the new DTO
 import { ResponseDto } from '../common/dtos/response';
-import { Auth } from 'src/auth/decorator/auth.decorator';
-import { AuthType } from 'src/auth/enum/auth-type.enum';
+import { Auth } from '../auth/decorator/auth.decorator';
+import { AuthType } from '../auth/enum/auth-type.enum';
 
 @ApiTags('Encryption')
 @Controller('encryptions')
