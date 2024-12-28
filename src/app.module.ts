@@ -27,9 +27,9 @@ import { ModulesModule } from './modules/modules.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { EncryptionInterceptor } from './common/interceptors/encryption.interceptor';
 import { EncryptionsModule } from './encryptions/encryptions.module';
-import { MongoExceptionFilter } from './common/filters/mongo.exception.filter';
 import { PaginationWithAggregationProvider } from './common/pagination/providors/pagination-with-aggregation.provider';
 import { PaginationProvider } from './common/pagination/providors/pagination.provide';
+import { MongoExceptionInterceptor } from './common/interceptors/mongo-exception.interceptor';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -113,9 +113,10 @@ const ENV = process.env.NODE_ENV;
       inject: [ConfigService],
     },
     {
-      provide: APP_FILTER,
-      useClass: MongoExceptionFilter,
+      provide: APP_INTERCEPTOR,
+      useClass: MongoExceptionInterceptor,
     },
+
     {
       provide: APP_INTERCEPTOR,
       useClass: DataResponseInterceptor,
