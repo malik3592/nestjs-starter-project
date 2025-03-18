@@ -30,7 +30,7 @@ import { EncryptionsModule } from './encryptions/encryptions.module';
 import { PaginationWithAggregationProvider } from './common/pagination/providors/pagination-with-aggregation.provider';
 import { PaginationProvider } from './common/pagination/providors/pagination.provide';
 import { MongoExceptionInterceptor } from './common/interceptors/mongo-exception.interceptor';
-
+import { TestModule } from './test/test.module';
 const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -95,6 +95,7 @@ const ENV = process.env.NODE_ENV;
     ModulesModule,
     RolePermissionsModule,
     EncryptionsModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [
